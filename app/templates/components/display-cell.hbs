@@ -1,9 +1,17 @@
-{{#if cell.isOpen}}
-  {{#if cell.hasMine}}
+{{#if cell.isRevealed}}
+  {{#if cell.isCorrectlyFlagged}}
+    {{fa-icon "flag"}}Y
+  {{else if cell.isIncorrectlyFlagged}}
+    {{fa-icon "bomb"}}X
+  {{else if cell.isActiveMine}}
+    {{fa-icon "bomb"}}R
+  {{/if}}
+{{else if cell.isOpen}}
+  {{#if cell.isFlagged}}
+    {{fa-icon "flag"}}
+  {{else if cell.hasMine}}
     {{fa-icon "bomb"}}
   {{else}}
     {{#unless cell.isEmpty}}{{cell.digit}}{{/unless}}
   {{/if}}
-{{else if cell.isFlagged}}
-  {{fa-icon "flag"}}
 {{/if}}

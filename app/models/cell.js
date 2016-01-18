@@ -1,27 +1,33 @@
 import Ember from 'ember';
 const {computed, computed: {and, equal, not}} = Ember;
 
-const STATES = {
-  CLOSED:   0,
-  OPEN:     1
-};
+// when revealed:
+//   correctly flagged: show flag
+//   incorrectly flagged: show X over bomb
+//   clicked bomb: show red bomb
+//   bomb: show normal bomb
 
 export default Ember.Object.extend({
   hasMine: false,
-  state: STATES.CLOSED,
   board: null,
   row: null,
   col: null,
-  isFlagged: false,
 
-  isOpen: equal('state', STATES.OPEN),
-  isClosed: equal('state', STATES.CLOSED),
+  isFlagged: false,
+  isOpen: false,
+  isRevealed: false,
+
+  isClosed: not('isOpen'),
+  isCorrectlyFlagged: and('hasMine', 'isFlagged'),
+  isIncorrectlyFlagged: and('notHasMine', 'isFlagged'),
+  isActiveMine: and('isOpen', 'hasMine'),
+
   isZero: equal('digit', 0),
   notHasMine: not('hasMine'),
   isEmpty: and('isZero', 'notHasMine'),
 
   open() {
-    this.set('state', STATES.OPEN);
+    this.set('isOpen', true);
   },
 
   openEmptySurrounding() {
@@ -33,12 +39,17 @@ export default Ember.Object.extend({
   },
 
   close() {
-    this.set('state', STATES.CLOSED);
+    this.set('isOpen', false);
   },
 
-  toggleFlag() {
-    this.toggleProperty('isFlagged');
-    this.close();
+  flag() {
+    this.set('isFlagged', true);
+    this.set('isOpen', true);
+  },
+
+  unflag() {
+    this.set('isFlagged', false);
+    this.set('isOpen', false);
   },
 
   isSurroundFlagged: computed(function() {
