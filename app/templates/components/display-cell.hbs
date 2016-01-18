@@ -1,0 +1,9 @@
+{{#if cell.isOpen}}
+  {{#if cell.hasMine}}
+    {{fa-icon "bomb"}}
+  {{else}}
+    {{#unless cell.isEmpty}}{{cell.digit}}{{/unless}}
+  {{/if}}
+{{else if cell.isFlagged}}
+  {{fa-icon "flag"}}
+{{/if}}

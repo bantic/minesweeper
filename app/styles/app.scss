@@ -1,0 +1,34 @@
+body {
+  box-sizing: border-box;
+}
+
+.row {
+  width: 400px;
+  height: 25px;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-size: 0;
+}
+
+.cell {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  width: 25px;
+  height: 25px;
+  display: inline-block;
+  overflow: hidden;
+  border: 1px solid black;
+  font-size: 18px;
+  line-height: 25px;
+  text-align: center;
+
+  &.is-closed {
+    background-color: gray;
+  }
+
+  &.is-open {
+    background-color: lightgray;
+  }
+}
