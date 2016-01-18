@@ -1,5 +1,5 @@
 import Ember from 'ember';
-const {computed} = Ember;
+const {computed, computed: {and, equal, not}} = Ember;
 
 const STATES = {
   CLOSED:   0,
@@ -14,16 +14,22 @@ export default Ember.Object.extend({
   col: null,
   isFlagged: false,
 
-  isOpen: computed.equal('state', STATES.OPEN),
-  isClosed: computed.equal('state', STATES.CLOSED),
-  isEmpty: computed.equal('digit', 0),
+  isOpen: equal('state', STATES.OPEN),
+  isClosed: equal('state', STATES.CLOSED),
+  isZero: equal('digit', 0),
+  notHasMine: not('hasMine'),
+  isEmpty: and('isZero', 'notHasMine'),
 
   open() {
     this.set('state', STATES.OPEN);
   },
 
-  openSurrounding() {
-    this.get('board').openSurrounding(this);
+  openEmptySurrounding() {
+    this.get('board').openEmptySurrounding(this);
+  },
+
+  openImmediateSurrounding() {
+    this.get('board').openImmediateSurrounding(this);
   },
 
   close() {
@@ -34,6 +40,16 @@ export default Ember.Object.extend({
     this.toggleProperty('isFlagged');
     this.close();
   },
+
+  isSurroundFlagged: computed(function() {
+    if (this.get('hasMine')) {
+      return false;
+    }
+    let neighbors = this.get('board').neighborsFor(this);
+    neighbors = neighbors.filterBy('isFlagged', true);
+    let digit = this.get('digit');
+    return neighbors.get('length') === digit;
+  }).volatile(),
 
   digit: computed(function() {
     let neighbors = this.get('board').neighborsFor(this);

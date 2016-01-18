@@ -28,7 +28,7 @@ export default Ember.Object.extend({
     return cells[row][col];
   },
 
-  openSurrounding(cell) {
+  openEmptySurrounding(cell) {
     let queue = this.neighborsFor(cell);
     let seen = {};
     while (queue.length) {
@@ -42,6 +42,16 @@ export default Ember.Object.extend({
         queue.push(...this.neighborsFor(neighbor));
       }
     }
+  },
+
+  openImmediateSurrounding(cell) {
+    let neighbors = this.neighborsFor(cell);
+    neighbors.filterBy('isFlagged', false).forEach(neighbor => {
+      neighbor.open();
+      if (neighbor.get('isEmpty')) {
+        this.openEmptySurrounding(neighbor);
+      }
+    });
   },
 
   neighborsFor(cell) {

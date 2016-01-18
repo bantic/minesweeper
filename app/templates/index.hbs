@@ -1,9 +1,11 @@
 <p>shift-click to flag</p>
 
-{{#each model.cells as |row|}}
-  <div class='row'>
-    {{#each row as |cell|}}
-      {{display-cell cell=cell}}
-    {{/each}}
-  </div>
-{{/each}}
+<div class='game'>
+  {{#each model.cells as |row|}}
+    <div class='row'>
+      {{#each row as |cell|}}
+        {{display-cell cell=cell}}
+      {{/each}}
+    </div>
+  {{/each}}
+</div>

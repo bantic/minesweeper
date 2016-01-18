@@ -9,6 +9,8 @@ export default Ember.Component.extend({
   cell: null,
 
   click(evt) {
+    evt.preventDefault();
+
     let cell = this.get('cell');
 
     if (evt.shiftKey) {
@@ -16,7 +18,9 @@ export default Ember.Component.extend({
     } else {
       cell.open();
       if (cell.get('isEmpty')) {
-        cell.openSurrounding();
+        cell.openEmptySurrounding();
+      } else if (cell.get('isSurroundFlagged')) {
+        cell.openImmediateSurrounding();
       }
     }
   }
