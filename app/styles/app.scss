@@ -52,6 +52,15 @@ body {
   &.digit-8 {
   }
 
+  &.is-active-mine {
+    background-color: red;
+    color: black;
+  }
+
+  &.is-flagged {
+    color: black;
+  }
+
   &.is-closed {
     background-color: gray;
   }

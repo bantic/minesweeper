@@ -8,12 +8,17 @@ export default Ember.Component.extend({
     'cell.isClosed:is-closed',
     'cell.isActiveMine:is-active-mine',
     'cell.isIncorrectlyFlagged:is-incorrectly-flagged',
+    'cell.isFlagged:is-flagged',
     'cellDigit'
   ],
 
   cell: null,
-  cellDigit: computed('cell.digit', function() {
-    return `digit-${this.get('cell.digit')}`;
+  cellDigit: computed('cell.isFlagged', 'cell.hasMine', 'cell.digit', function() {
+    if (this.get('cell.isFlagged') || this.get('cell.hasMine')) {
+      return '';
+    } else {
+      return `digit-${this.get('cell.digit')}`;
+    }
   }),
 
   click(evt) {
