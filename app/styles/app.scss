@@ -28,6 +28,29 @@ body {
   font-size: 18px;
   line-height: 25px;
   text-align: center;
+  font-weight: bold;
+
+  &.digit-1 {
+    color: blue;
+  }
+  &.digit-2 {
+    color: green;
+  }
+  &.digit-3 {
+    color: darkred;
+  }
+  &.digit-4 {
+    color: purple;
+  }
+  &.digit-5 {
+    color: darkgreen;
+  }
+  &.digit-6 {
+  }
+  &.digit-7 {
+  }
+  &.digit-8 {
+  }
 
   &.is-closed {
     background-color: gray;
