@@ -17,6 +17,7 @@ body {
 }
 
 .cell {
+  position: relative;
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -52,20 +53,28 @@ body {
   &.digit-8 {
   }
 
-  &.is-active-mine {
-    background-color: red;
-    color: black;
-  }
-
-  &.is-flagged {
-    color: black;
-  }
-
   &.is-closed {
     background-color: gray;
   }
 
   &.is-open {
     background-color: lightgray;
+  }
+
+  &.is-revealed {
+    &.has-mine {
+      background-color: lightgray;
+    }
+    &.is-active-mine {
+      background-color: red;
+    }
+  }
+
+  .mine-cross {
+    position: absolute;
+    color: red;
+    top: 0;
+    left: 0;
+    font-size: 24px;
   }
 }

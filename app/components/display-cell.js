@@ -1,5 +1,5 @@
 import Ember from 'ember';
-const { computed } = Ember;
+const { computed, computed: { reads, or } } = Ember;
 
 export default Ember.Component.extend({
   classNames: ['cell'],
@@ -9,10 +9,16 @@ export default Ember.Component.extend({
     'cell.isActiveMine:is-active-mine',
     'cell.isIncorrectlyFlagged:is-incorrectly-flagged',
     'cell.isFlagged:is-flagged',
+    'shouldReveal:is-revealed',
+    'cell.hasMine:has-mine',
     'cellDigit'
   ],
 
   cell: null,
+  board: reads('cell.board'),
+  shouldReveal: reads('board.isLost'),
+  ignoreClicks: or('board.isWon', 'board.isLost'),
+
   cellDigit: computed('cell.isFlagged', 'cell.hasMine', 'cell.digit', function() {
     if (this.get('cell.isFlagged') || this.get('cell.hasMine')) {
       return '';
@@ -23,9 +29,17 @@ export default Ember.Component.extend({
 
   click(evt) {
     evt.preventDefault();
+    let cell = this.get('cell');
     let isShift = evt.shiftKey;
 
-    let cell = this.get('cell');
+    if (this.get('ignoreClicks')) {
+      return;
+    }
+    if (cell.get('isFlagged')) {
+      cell.unflag();
+      return;
+    }
+
     if (cell.get('isOpen')) {
       if (cell.get('isSurroundFlagged')) {
         cell.openImmediateSurrounding();

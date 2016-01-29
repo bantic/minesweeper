@@ -14,20 +14,20 @@ export default Ember.Object.extend({
   col: null,
 
   isFlagged: false,
+  notIsFlagged: not('isFlagged'),
   isOpen: false,
-  isRevealed: false,
 
   isClosed: not('isOpen'),
   isCorrectlyFlagged: and('hasMine', 'isFlagged'),
   isIncorrectlyFlagged: and('notHasMine', 'isFlagged'),
-  isActiveMine: and('isOpen', 'hasMine'),
+  isActiveMine: and('isOpen', 'hasMine', 'notIsFlagged'),
 
   isZero: equal('digit', 0),
   notHasMine: not('hasMine'),
   isEmpty: and('isZero', 'notHasMine'),
 
   open() {
-    this.set('isOpen', true);
+    this.get('board').open(this);
   },
 
   openEmptySurrounding() {

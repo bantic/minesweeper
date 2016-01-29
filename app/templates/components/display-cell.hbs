@@ -1,10 +1,19 @@
-{{#if cell.isRevealed}}
+{{! if should reveal:
+  * display active mine in red
+  * display all other mines
+  * correctly flagged shows as flag
+  * incorrectly flagged shows as x-ed mine
+  }}
+{{#if shouldReveal}}
   {{#if cell.isCorrectlyFlagged}}
-    {{fa-icon "flag"}}Y
+    {{fa-icon "flag"}}
   {{else if cell.isIncorrectlyFlagged}}
-    {{fa-icon "bomb"}}X
-  {{else if cell.isActiveMine}}
-    {{fa-icon "bomb"}}R
+    {{fa-icon "bomb"}}
+    {{fa-icon "times" class="mine-cross"}}
+  {{else if cell.hasMine}}
+    {{fa-icon "bomb"}}
+  {{else if cell.isOpen}}
+    {{#unless cell.isEmpty}}{{cell.digit}}{{/unless}}
   {{/if}}
 {{else if cell.isOpen}}
   {{#if cell.isFlagged}}

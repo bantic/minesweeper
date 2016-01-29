@@ -1,8 +1,6 @@
 import Ember from 'ember';
 import Cell from './cell';
 
-const { computed } = Ember;
-
 function getRandomInt(max) {
   let min = 0;
   return Math.floor(Math.random() * (max - min)) + min;
@@ -12,20 +10,41 @@ export default Ember.Object.extend({
   mines:  0,
   rows:  0,
   cols: 0,
-  cells: computed(function() { return [[]]; }),
-
-  addCell(cell,row,col) {
-    let cells = this.get('cells');
-    if (!cells[row]) { cells[row] = []; }
-    cell.set('board', this);
-    cell.set('row',row);
-    cell.set('col',col);
-    cells[row][col] = cell;
-  },
+  isLost: false,
+  isWon: false,
+  cells: null,
 
   getCell(row, col) {
     let cells = this.get('cells');
     return cells[row][col];
+  },
+
+  open(cell) {
+    if (cell.get('isOpen')) {
+      return;
+    }
+    cell.set('isOpen', true);
+
+    if (cell.get('hasMine')) {
+      this.set('isLost', true);
+    } else if (this.checkIfWon()) {
+      this.set('isWon', true);
+    }
+  },
+
+  checkIfWon() {
+    let { rows, cols } = this.getProperties('rows', 'cols');
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        let cell = this.getCell(r, c);
+        if (cell.get('hasMine') || cell.get('isOpen')) {
+          //
+        } else {
+          return false;
+        }
+      }
+    }
+    return true;
   },
 
   openEmptySurrounding(cell) {
@@ -37,7 +56,7 @@ export default Ember.Object.extend({
         continue;
       }
       seen[Ember.guidFor(neighbor)] = true;
-      neighbor.open();
+      this.open(neighbor);
       if (neighbor.get('isEmpty')) {
         queue.push(...this.neighborsFor(neighbor));
       }
@@ -47,7 +66,7 @@ export default Ember.Object.extend({
   openImmediateSurrounding(cell) {
     let neighbors = this.neighborsFor(cell);
     neighbors.filterBy('isFlagged', false).forEach(neighbor => {
-      neighbor.open();
+      this.open(neighbor);
       if (neighbor.get('isEmpty')) {
         this.openEmptySurrounding(neighbor);
       }
@@ -76,30 +95,45 @@ export default Ember.Object.extend({
     this._super(...arguments);
 
     let {mines, rows, cols} = this.getProperties(['mines','rows','cols']);
+    this.set('cells', this._createCells(rows, cols));
+    this._addMines(mines, rows, cols);
+  },
 
-    let mineOptions = [];
-    let mineSpots = [];
+  _addMines(mineCount, rows, cols) {
+    let mineOptions = [], mineSpots = [];
+
     for (let i=0; i < rows*cols; i++) {
       mineOptions.push(i);
     }
-    for (let i=0; i < mines; i++) {
+
+    for (let i=0; i < mineCount; i++) {
       let mineSpot = getRandomInt(mineOptions.length);
       mineSpots.push(mineSpot);
       mineOptions.splice(mineSpot, 1);
-    }
-
-    for (let i=0; i < rows; i++) {
-      for (let j=0; j < cols; j++) {
-        this.addCell(Cell.create(), i, j);
-      }
     }
 
     for (let i=0; i<mineSpots.length; i++) {
       let mineSpot = mineSpots[i];
       let row = Math.floor(mineSpot / rows),
           col = mineSpot % rows;
-      let cell = this.getCell(row, col);
-      cell.set('hasMine', true);
+
+      this.getCell(row, col).set('hasMine', true);
     }
+  },
+
+  _createCells(rows, cols) {
+    let cells = [];
+
+    for (let row=0; row < rows; row++) {
+      if (!cells[row]) {
+        cells[row] = [];
+      }
+      for (let col=0; col < cols; col++) {
+        let cell = Cell.create({row, col, board: this});
+        cells[row][col] = cell;
+      }
+    }
+
+    return cells;
   }
 });
