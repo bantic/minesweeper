@@ -13,7 +13,7 @@
     "test": "ember test",
     "deploy": "ember build --environment production && surge ./dist"
   },
-  "repository": "",
+  "repository": "https://github.com/bantic/minesweeper",
   "engines": {
     "node": ">= 0.10.0"
   },
