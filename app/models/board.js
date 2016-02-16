@@ -66,7 +66,6 @@ export default Ember.Object.extend({
   },
 
   openImmediateSurrounding(cell) {
-    console.log('openImmediateSurrounding');
     if (!cell.get('isSurroundFlagged')) {
       return false;
     }
@@ -83,7 +82,6 @@ export default Ember.Object.extend({
   },
 
   neighborsFor(cell) {
-    console.log('neighborsFor');
     let rows = this.get('rows'),
         cols = this.get('cols');
 
