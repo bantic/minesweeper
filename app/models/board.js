@@ -19,7 +19,7 @@ export default Ember.Object.extend({
     return cells[row][col];
   },
 
-  open(cell) {
+  open(cell, options={}) {
     if (cell.get('isOpen')) {
       return;
     }
@@ -29,6 +29,8 @@ export default Ember.Object.extend({
       this.set('isLost', true);
     } else if (this.checkIfWon()) {
       this.set('isWon', true);
+    } else if (options.openEmptySurrounding) {
+      this.openEmptySurrounding(cell);
     }
   },
 
@@ -64,6 +66,11 @@ export default Ember.Object.extend({
   },
 
   openImmediateSurrounding(cell) {
+    console.log('openImmediateSurrounding');
+    if (!cell.get('isSurroundFlagged')) {
+      return false;
+    }
+
     let neighbors = this.neighborsFor(cell);
     neighbors.filterBy('isFlagged', false).forEach(neighbor => {
       this.open(neighbor);
@@ -71,9 +78,12 @@ export default Ember.Object.extend({
         this.openEmptySurrounding(neighbor);
       }
     });
+
+    return true;
   },
 
   neighborsFor(cell) {
+    console.log('neighborsFor');
     let rows = this.get('rows'),
         cols = this.get('cols');
 

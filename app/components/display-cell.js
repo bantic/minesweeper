@@ -29,32 +29,22 @@ export default Ember.Component.extend({
 
   click(evt) {
     evt.preventDefault();
+
     let cell = this.get('cell');
     let isShift = evt.shiftKey;
 
     if (this.get('ignoreClicks')) {
       return;
     }
+
     if (cell.get('isFlagged')) {
       cell.unflag();
-      return;
-    }
-
-    if (cell.get('isOpen')) {
-      if (cell.get('isSurroundFlagged')) {
-        cell.openImmediateSurrounding();
-      } else if (cell.get('isFlagged') && isShift) {
-        cell.unflag();
-      }
+    } else if (cell.get('isOpen')) {
+      cell.openImmediateSurrounding();
+    } else if (isShift) {
+      cell.flag();
     } else {
-      if (isShift) {
-        cell.flag();
-      } else {
-        cell.open();
-        if (cell.get('isEmpty')) {
-          cell.openEmptySurrounding();
-        }
-      }
+      cell.openSelfAndEmptySurrounding();
     }
   }
 });

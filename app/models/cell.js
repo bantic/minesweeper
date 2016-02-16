@@ -30,6 +30,13 @@ export default Ember.Object.extend({
     this.get('board').open(this);
   },
 
+  openSelfAndEmptySurrounding() {
+    this.open();
+    if (this.get('isEmpty')) {
+      this.openEmptySurrounding(this);
+    }
+  },
+
   openEmptySurrounding() {
     this.get('board').openEmptySurrounding(this);
   },
@@ -53,6 +60,7 @@ export default Ember.Object.extend({
   },
 
   isSurroundFlagged: computed(function() {
+    console.log('isSurroundFlagged');
     if (this.get('hasMine')) {
       return false;
     }
@@ -63,6 +71,7 @@ export default Ember.Object.extend({
   }).volatile(),
 
   digit: computed(function() {
+    console.log('digit');
     let neighbors = this.get('board').neighborsFor(this);
     return neighbors.reduce((prev, neighbor) => {
       return prev + (neighbor.get('hasMine') ? 1 : 0);
